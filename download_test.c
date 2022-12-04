@@ -9,6 +9,10 @@
 
 #define SERVER_PORT 21
 char* address;
+char* g_name;
+char* g_pass;
+char* g_ftp;
+char* g_path;
 
 int getIp(char* name) {
     struct hostent *h;
@@ -39,30 +43,145 @@ int getIp(char* name) {
 
     return 0;
 }
+			
 
 int main(int argc, char **argv) {
 
-    if (getIp(argv[1]) == 1) {
-        printf("Error in getIP\n");
-        return 1;
+    
+    char* url = argv[1];
+    printf("url: %s\n", url);
+    
+    //NAME START-----------------------------------------------------------
+    
+    char idk1[100];
+    int j = 7;
+    int index = 0;
+	
+    while (1) {
+	if (url[j] == ':') {
+		break;
+	}
+	idk1[index] = url[j];
+	
+	j++;
+	index++;
     }
-
+    idk1[index+1] = '\0';
+	
+    //NAME END------------------------------------------------------
+    
+    //PASS START----------------------------------------------------
+    char idk2[100]; 
+    j = 7;
+    index = 0;
+	
+    while (1) {
+    	if (url[j] == ':') {
+		j++;
+		break;
+	}
+	j++;
+    }
+	
+    while (1) {
+	if (url[j] == '@') {
+		break;
+	}
+	idk2[index] = url[j];
+	j++;
+	index++;
+    }
+	
+    
+    //PASS END----------------------------------------------------
+    
+    //FTP START----------------------------------------------------
+    char idk3[100]; 
+    j = 7;
+    index = 0;
+	
+    while (1) {
+    	if (url[j] == ']') {
+		j++;
+		break;
+	}
+	j++;
+    }
+	
+    while (1) {
+	if (url[j] == '/') {
+		break;
+	}
+	idk3[index] = url[j];
+	j++;
+	index++;
+    }
+    
+    //FTP END----------------------------------------------------
+    
+    //PATH START----------------------------------------------------
+    
+    char idk4[100]; 
+    j = 7;
+    index = 0;
+	
+    while (1) {
+    	if (url[j] == '/') {
+		break;
+	}
+	j++;
+    }
+	
+    while (1) {
+	if (j >= 100) {
+		break;
+	}
+	idk4[index] = url[j];
+	j++;
+	index++;
+    }
+    
+    //PATH END----------------------------------------------------
+    
     char message1[100] = "user ";
     char message2[100] = "pass ";
     char message3[100] = "pasv\n";
     char message4[100] = "retr ";
     char enter[] = "\n";
-
-
-    strcat(message1, argv[2]);
-    strcat(message2, argv[3]);
-    strcat(message4, argv[4]);
+    
+   
+    strcat(message1, idk1);
     strcat(message1, enter);
+    
+    printf("name: %s\n", idk1);
+    
+
+    strcat(message2, idk2);
     strcat(message2, enter);
+    
+    printf("pass: %s\n", idk2);
+    
+    strcat(message4, idk4);
     strcat(message4, enter);
+   
+    printf("path: %s\n", idk4);
+    
+    
+    if (getIp(idk3) == 1) {
+        printf("Error in getIP\n");
+        return 1;
+    }
+    
+    printf("ftp: %s\n", idk3);
+    
+    
+   
 
     
     size_t bytes;
+    
+    
+    
 
     /*server address handling*/
     int sockfd;
