@@ -197,7 +197,7 @@ int main(int argc, char **argv) {
         exit(-1);
     }
     
-    char conf[2000];
+    char conf[4000];
     char line[100];
     
     /*connect to the server*/
@@ -354,23 +354,46 @@ int main(int argc, char **argv) {
 
     printf("%s\n", conf);
     
+    char num_bytes[100];
+    
+    int kik = 0;
+    while (kik < 1000) {
+    	if (conf[kik] == '(') {
+    		kik++;
+    		break;
+    	}
+    	kik++;
+    }
+    
+    int index_final = 0;
+    
+    while (kik < 1000) {
+    	if (conf[kik] == ' ') {
+    		break;
+    	}
+    
+    	num_bytes[index_final] = conf[kik];
+    	kik++;
+    	index_final++;
+    }
+    
+    
+    int final_number = atoi(num_bytes);
+    
+    printf("byte number = %d\n", final_number);
+    	
+    
+    
+    
+    bytes = read(sock2fd, conf, 4000);
     
     
     
     
-    bytes = read(sock2fd, conf, 1000);
 
 
     printf("FILE READ:\n");
     printf("%s\n", conf);
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     
@@ -389,6 +412,15 @@ int main(int argc, char **argv) {
         perror("close()");
         exit(-1);
     }
+    
+    
+    FILE *f = fopen("ftp_file", "wb");
+    fwrite(conf, 1, final_number, f);
+    fclose(f);
+    
+    
+    
+    
     return 0;
 }
 
