@@ -383,9 +383,9 @@ int main(int argc, char **argv) {
     printf("byte number = %d\n", final_number);
     	
     
+    char res[final_number * 10];
     
-    
-    bytes = read(sock2fd, conf, 4000);
+    bytes = read(sock2fd, res, final_number * 10);
     
     
     
@@ -393,7 +393,7 @@ int main(int argc, char **argv) {
 
 
     printf("FILE READ:\n");
-    printf("%s\n", conf);
+    printf("%s\n", res);
     
     
     
@@ -415,7 +415,7 @@ int main(int argc, char **argv) {
     
     
     FILE *f = fopen("ftp_file", "wb");
-    fwrite(conf, 1, final_number, f);
+    fwrite(res, 1, final_number, f);
     fclose(f);
     
     
