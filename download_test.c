@@ -19,7 +19,6 @@ int getIp(char* name) {
 
 /**
  * The struct hostent (host entry) with its terms documented
-
     struct hostent {
         char *h_name;    // Official name of the host.
         char **h_aliases;    // A NULL-terminated array of alternate names for the host.
@@ -28,7 +27,6 @@ int getIp(char* name) {
         char **h_addr_list;    // A zero-terminated array of network addresses for the host.
         // Host addresses are in Network Byte Order.
     };
-
     #define h_addr h_addr_list[0]	The first address in h_addr_list.
 */
     if ((h = gethostbyname(name)) == NULL) {
@@ -51,138 +49,63 @@ int main(int argc, char **argv) {
     char* url = argv[1];
     printf("url: %s\n", url);
     
-    //NAME START-----------------------------------------------------------
+ 
+    //PROTOCOL START----------------------------------------------------
+    char* protocol = strtok(url, ":");
+    //PROTOCOL END------------------------------------------------------
+
+    char* rubish1 = strtok(NULL,"[");
     
-    char idk1[100];
-    int j = 7;
-    int index = 0;
-	
-    while (1) {
-	if (url[j] == ':') {
-		break;
-	}
-	idk1[index] = url[j];
-	
-	j++;
-	index++;
-    }
-    idk1[index+1] = '\0';
-	
-    //NAME END------------------------------------------------------
-    
+    //USER START----------------------------------------------------
+    char* user = strtok(NULL, ":");
+    //USER END------------------------------------------------------
+
     //PASS START----------------------------------------------------
-    char idk2[100]; 
-    j = 7;
-    index = 0;
-	
-    while (1) {
-    	if (url[j] == ':') {
-		j++;
-		break;
-	}
-	j++;
-    }
-	
-    while (1) {
-	if (url[j] == '@') {
-		break;
-	}
-	idk2[index] = url[j];
-	j++;
-	index++;
-    }
-	
-    
-    //PASS END----------------------------------------------------
-    
+    char* pass = strtok(NULL, "]");
+    memset(pass + strlen(pass) -1, '\0',1);
+    //PASS END------------------------------------------------------
+
     //FTP START----------------------------------------------------
-    char idk3[100]; 
-    j = 7;
-    index = 0;
-	
-    while (1) {
-    	if (url[j] == ']') {
-		j++;
-		break;
-	}
-	j++;
-    }
-	
-    while (1) {
-	if (url[j] == '/') {
-		break;
-	}
-	idk3[index] = url[j];
-	j++;
-	index++;
-    }
+    char* server = strtok(NULL, "/");
+    //FTP END------------------------------------------------------
     
-    //FTP END----------------------------------------------------
+    //PATH START---------------------------------------------------
+    char* path = strtok(NULL, "\0");
+    //PATH END-----------------------------------------------------
     
-    //PATH START----------------------------------------------------
-    
-    char idk4[100]; 
-    j = 7;
-    index = 0;
-	
-    while (1) {
-    	if (url[j] == '/') {
-		break;
-	}
-	j++;
-    }
-	
-    while (1) {
-	if (j >= 100) {
-		break;
-	}
-	idk4[index] = url[j];
-	j++;
-	index++;
-    }
-    
-    //PATH END----------------------------------------------------
-    
-    char message1[100] = "user ";
-    char message2[100] = "pass ";
-    char message3[100] = "pasv\n";
-    char message4[100] = "retr ";
+    char message1[200] = "user ";
+    char message2[200] = "pass ";
+    char message3[200] = "pasv\n";
+    char message4[200] = "retr ";
     char enter[] = "\n";
     
    
-    strcat(message1, idk1);
+    strcat(message1, user);
     strcat(message1, enter);
     
-    printf("name: %s\n", idk1);
+    printf("name: %s\n", user);
     
 
-    strcat(message2, idk2);
+    strcat(message2, pass);
     strcat(message2, enter);
     
-    printf("pass: %s\n", idk2);
+    printf("pass: %s\n", pass);
     
-    strcat(message4, idk4);
+    strcat(message4, path);
     strcat(message4, enter);
    
-    printf("path: %s\n", idk4);
+    printf("path: %s\n", path);
     
     
-    if (getIp(idk3) == 1) {
+    if (getIp(server) == 1) {
         printf("Error in getIP\n");
         return 1;
     }
     
-    printf("ftp: %s\n", idk3);
-    
-    
-   
-
+    printf("ftp: %s\n", server);
     
     size_t bytes;
     
-    
-    
-
     /*server address handling*/
     int sockfd;
     struct sockaddr_in server_addr;
@@ -198,7 +121,7 @@ int main(int argc, char **argv) {
     }
     
     char conf[4000];
-    char line[100];
+    char line[200];
     
     /*connect to the server*/
     if (connect(sockfd, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
@@ -386,23 +309,10 @@ int main(int argc, char **argv) {
     char res[final_number * 10];
     
     bytes = read(sock2fd, res, final_number * 10);
-    
-    
-    
-    
-
 
     printf("FILE READ:\n");
     printf("%s\n", res);
     
-    
-    
-    
-    
-    
-    
-
-
 
     if (close(sockfd)<0) {
         perror("close()");
@@ -413,17 +323,10 @@ int main(int argc, char **argv) {
         exit(-1);
     }
     
-    
     FILE *f = fopen("ftp_file", "wb");
     fwrite(res, 1, final_number, f);
     fclose(f);
     
-    
-    
-    
     return 0;
 }
-
-
-
 
