@@ -306,12 +306,26 @@ int main(int argc, char **argv) {
     printf("byte number = %d\n", final_number);
     	
     
-    char res[final_number * 10];
-    
-    bytes = read(sock2fd, res, final_number * 10);
+    char res[1000];
+    int  check = final_number;
 
-    printf("FILE READ:\n");
-    printf("%s\n", res);
+    FILE *f = fopen("ftp_file", "wb");
+    
+
+    while (1) {
+        bytes = read(sock2fd, res, 1000);    
+        printf("BYTES READ: %d\n", bytes);
+        check = check - bytes;
+        fwrite(res, 1, bytes, f);
+        
+        if (check == 0)  {
+            break;
+        }
+    }        
+        
+            
+    fclose(f);
+    
     
 
     if (close(sockfd)<0) {
@@ -323,10 +337,6 @@ int main(int argc, char **argv) {
         exit(-1);
     }
     
-    FILE *f = fopen("ftp_file", "wb");
-    fwrite(res, 1, final_number, f);
-    fclose(f);
     
     return 0;
 }
-
