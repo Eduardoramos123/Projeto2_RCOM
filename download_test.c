@@ -49,29 +49,32 @@ int main(int argc, char **argv) {
     char* url = argv[1];
     printf("url: %s\n", url);
     
- 
-    //PROTOCOL START----------------------------------------------------
-    char* protocol = strtok(url, ":");
-    //PROTOCOL END------------------------------------------------------
+    char* protocol = malloc(strlen(url) + 1);
+    char* server = malloc(strlen(url) + 1);
+    char* user = malloc(strlen(url) + 1);
+    char* pass = malloc(strlen(url) + 1);
+    char* path = malloc(strlen(url) + 1);
 
-    char* rubish1 = strtok(NULL,"[");
-    
-    //USER START----------------------------------------------------
-    char* user = strtok(NULL, ":");
-    //USER END------------------------------------------------------
 
-    //PASS START----------------------------------------------------
-    char* pass = strtok(NULL, "]");
-    memset(pass + strlen(pass) -1, '\0',1);
-    //PASS END------------------------------------------------------
+    char ch = '@';
 
-    //FTP START----------------------------------------------------
-    char* server = strtok(NULL, "/");
-    //FTP END------------------------------------------------------
-    
-    //PATH START---------------------------------------------------
-    char* path = strtok(NULL, "\0");
-    //PATH END-----------------------------------------------------
+    if (strchr(url, ch) != NULL) {
+        printf("The string '%s' contains the character '%c'.\n", url, ch);
+        int result = sscanf(url, "%[^:]://%[^:]:%[^@]@%[^/]%s", protocol, user,pass, server, path);
+    } 
+    else {
+        printf("The string '%s' does not contain the character '%c'.\n", url, ch);
+        user = "anonymous";
+        pass = "anonymous";
+        int result = sscanf(url, "%[^:]://%[^/]%s", protocol, server, path);
+    }
+
+
+    printf("PROTOCOLO: %s\n",protocol);
+    printf("USER: %s\n",user);
+    printf("PASS: %s\n",pass);
+    printf("SERVER: %s\n",server);
+    printf("PATH: %s\n",path);
     
     char message1[200] = "user ";
     char message2[200] = "pass ";
@@ -83,18 +86,16 @@ int main(int argc, char **argv) {
     strcat(message1, user);
     strcat(message1, enter);
     
-    printf("name: %s\n", user);
+   
     
 
     strcat(message2, pass);
     strcat(message2, enter);
     
-    printf("pass: %s\n", pass);
     
     strcat(message4, path);
     strcat(message4, enter);
-   
-    printf("path: %s\n", path);
+
     
     
     if (getIp(server) == 1) {
@@ -305,27 +306,28 @@ int main(int argc, char **argv) {
     
     printf("byte number = %d\n", final_number);
     	
-    
     char res[1000];
     int  check = final_number;
 
     FILE *f = fopen("ftp_file", "wb");
-    
+
 
     while (1) {
         bytes = read(sock2fd, res, 1000);    
-        printf("BYTES READ: %d\n", bytes);
+        printf("BYTES READ: %ld\n", bytes);
         check = check - bytes;
         fwrite(res, 1, bytes, f);
-        
+
         if (check == 0)  {
             break;
         }
     }        
-        
-            
+
+
     fclose(f);
-    
+
+    printf("FILE READ:\n");
+    printf("%s\n", res);
     
 
     if (close(sockfd)<0) {
@@ -340,3 +342,4 @@ int main(int argc, char **argv) {
     
     return 0;
 }
+
